@@ -1,0 +1,78 @@
+<html>
+    <head>
+        <script src="socket.io/socket.io.js"></script>
+        <script src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+        <meta charset="utf-8">
+        <title>Circles</title>
+        <style>
+          html, body, #map-canvas {
+            height: 100%;
+            margin: 0px;
+            padding: 0px
+          }
+        </style>
+        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    </head>
+    <body>
+        <div id="map-canvas"></div>
+        <script>
+            $(document).ready(function() {
+
+              var count = 0;  
+              var circles = []; 
+              var infos = []; 
+              var contentString = '<div id="content">'+'<div id="siteNotice">'+'</div>'+'<h1 id="firstHeading" class="firstHeading">Uluru</h1>'+'</div>'+'</div>';
+
+                var mapOptions = {
+                    zoom: 4,
+                    center: new google.maps.LatLng(37.09024, -95.712891),
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+
+                var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+
+                var lastWindow; 
+
+                var socket = io.connect('http://localhost');
+                socket.on('tweets', function (data) {
+                    var populationOptions = {
+                      strokeColor: '#FF0000',
+                      strokeOpacity: 0,
+                      strokeWeight: 0,
+                      fillColor: '#9b59b6',
+                      fillOpacity: 0.35,
+                      map: map,
+                      center: new google.maps.LatLng(data.lon, data.lad),
+                      radius: data.rad*20,
+                      place: count
+                    };
+                    var circle = new google.maps.Circle(populationOptions);
+                    lastCircle = circle; 
+
+                    var contentString = '<div id="content">'+'<div id="siteNotice">'+'</div>'+'<h1 id="firstHeading" class="firstHeading">'+data.name+'</h1>'+'<h2>'+data.text+'</h2></div>'+'</div>';
+
+                    var infowindow = new google.maps.InfoWindow({
+                      content: contentString,
+                      position: new google.maps.LatLng(data.lon, data.lad)
+                    });
+                    infos.push(infowindow); 
+
+                    google.maps.event.addListener(circle, 'mouseover', function() {
+                      if(lastWindow){
+                        lastWindow.close(); 
+                      }
+                      infos[circle.place].open(map);
+                      lastWindow = infos[circle.place]; 
+                    });
+
+                    // google.maps.event.addListener(circle, 'mouseout', function() {
+                    //   infos[circle.place].close();
+                    // });
+                    count++; 
+                });
+            });
+        </script>
+    </body>
+
+</html>
