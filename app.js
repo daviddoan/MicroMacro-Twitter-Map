@@ -39,7 +39,7 @@ if ('development' == app.get('env')) {
 var sanFrancisco = ['-122.75', '36.8', '-121.75', '37.8'];
 var losAngeles = ['34.172684','-118.604794','34.236144','-118.500938']; 
 
-var stream = T.stream('statuses/filter', {track:'phone'});
+var stream = T.stream('statuses/filter', {track:'Ukraine'});
 
 
 
