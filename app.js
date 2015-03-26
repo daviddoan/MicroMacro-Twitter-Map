@@ -11,7 +11,7 @@ var path = require('path');
 var app = express();
 
 // all environments
-app.set('port', process.env.PORT || 1000);
+app.set('port', process.env.PORT || 8000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.use(express.favicon());
@@ -36,12 +36,7 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-var sanFrancisco = ['-122.75', '36.8', '-121.75', '37.8'];
-var losAngeles = ['34.172684','-118.604794','34.236144','-118.500938']; 
-
-var stream = T.stream('statuses/filter', {track:'Ukraine'});
-
-
+var stream = T.stream('statuses/filter', {track:':)'});
 
 app.get('/users', user.list);
 
